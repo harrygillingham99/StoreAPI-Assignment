@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace store_api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("Products")]
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;

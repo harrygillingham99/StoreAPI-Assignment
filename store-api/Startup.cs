@@ -36,14 +36,14 @@ namespace store_api
 
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Complaints Service",
-                    Version = "1.0",
+                    Title = "store-front-end",
+                    Version = "0.1",
                     Description =
-                        "Service to support the complaints departs in handling Customer and Financial Ombudsman Service (FOS) raised complaints.",
+                        "API interface to handle the CRUD for the store",
                     Contact = new OpenApiContact
                     {
-                        Name = "John Ellison",
-                        Email = "john.ellison@amigo.me"
+                        Name = "Harry Gillingham",
+                        Email = "harrygillingham@hotmail.com"
                     },
 
 
