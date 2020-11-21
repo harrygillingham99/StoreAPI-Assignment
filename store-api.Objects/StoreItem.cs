@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace store_api.Objects
 {
@@ -16,6 +17,14 @@ namespace store_api.Objects
         public string JwtToken { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+    }
 
+    public class VoidRequest
+    {
+        public string JwtToken { get; set; }
+    }
+    public class ItemSelection
+    {
+        public List<int> SelectedItemKeys { get; set; }
     }
 }
