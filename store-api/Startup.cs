@@ -38,7 +38,7 @@ namespace store_api
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:3000",
-                            "https://e-commerce-assignment-295115.ew.r.appspot.com/");
+                            "https://e-commerce-assignment-295115.ew.r.appspot.com");
                     });
             });
             services.AddSwaggerGen(c =>
