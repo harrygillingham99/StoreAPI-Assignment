@@ -1,0 +1,4 @@
+runtime: aspnetcore
+manual_scaling:
+  instances: 2
+service: store-api

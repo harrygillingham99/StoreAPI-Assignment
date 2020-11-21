@@ -18,6 +18,8 @@ namespace store_api
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,6 +32,15 @@ namespace store_api
         {
             services.AddControllers();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000",
+                            "https://e-commerce-assignment-295115.ew.r.appspot.com/");
+                    });
+            });
             services.AddSwaggerGen(c =>
             {
                 c.GeneratePolymorphicSchemas();
@@ -84,6 +95,8 @@ namespace store_api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 
