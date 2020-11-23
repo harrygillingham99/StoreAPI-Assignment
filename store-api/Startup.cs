@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Scrutor;
+using store_api.Objects;
+using store_api.SqlServer.DAL;
 
 namespace store_api
 {
@@ -36,8 +38,8 @@ namespace store_api
             });
             services.AddSwaggerGen(c =>
             {
-                c.GeneratePolymorphicSchemas();
-
+                c.UseOneOfForPolymorphism();
+                
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "store-front-end",
@@ -49,24 +51,30 @@ namespace store_api
                         Name = "Harry Gillingham",
                         Email = "harrygillingham@hotmail.com"
                     },
-
-
                 });
 
             });
             services.AddOpenApiDocument();
 
             ScanForAllRemainingRegistrations(services);
+
+            AddConfigs(services);
         }
 
         public static void ScanForAllRemainingRegistrations(IServiceCollection services)
         {
             services.Scan(scan => scan
-                .FromAssembliesOf(typeof(Startup))
+                .FromAssembliesOf(typeof(Startup), typeof(Repository))
                 .AddClasses(x => x.WithoutAttribute(typeof(GeneratedCodeAttribute)))
                 .UsingRegistrationStrategy(RegistrationStrategy.Skip)
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
+        }
+
+        public void AddConfigs(IServiceCollection services)
+        {
+            services.Configure<ConnectionStrings>(option =>
+                Configuration.GetSection(nameof(ConnectionStrings)).Bind(option));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
