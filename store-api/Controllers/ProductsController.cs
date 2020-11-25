@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Cloud.Datastore.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using store_api.CloudDatastore.DAL;
 using store_api.Objects;
-using store_api.SqlServer.DAL;
 
 namespace store_api.Controllers
 {
@@ -65,12 +66,13 @@ namespace store_api.Controllers
             }
         }
 
-        [HttpDelete("expire/{id}")]
-        public async Task<bool> ExpireProduct([FromRoute] int id)
+        [HttpDelete("expire")]
+        public async Task<ActionResult> DeleteProduct([FromBody] long key)
         {
             try
             {
-                return await _storeRepository.ExpireProduct(id);
+                await _storeRepository.DeleteProduct(key);
+                return Ok();
             }
             catch (Exception e)
             {

@@ -18,7 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\store-api.Objects\store-api.Objects.csproj" />
-    <ProjectReference Include="..\store-api.SqlServer.DAL\store-api.SqlServer.DAL.csproj" />
+    <ProjectReference Include="..\store-api.SqlServer.DAL\store-api.CloudDatastore.DAL.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="app.yaml">

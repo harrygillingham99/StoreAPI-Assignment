@@ -1,55 +1,71 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
+using Google.Cloud.Datastore.V1;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using store_api.Objects;
+using store_api.Objects.Helpers;
+using static store_api.Objects.DbKinds;
 
-namespace store_api.SqlServer.DAL
+namespace store_api.CloudDatastore.DAL
 {
     public class StoreRepository : Repository, IStoreRepository
     {
-
-        public StoreRepository(IOptions<ConnectionStrings> connectionStrings, 
-            ILogger<StoreRepository> logger) : base(connectionStrings.Value.SqlServer, logger)
+       
+        public StoreRepository(
+            ILogger<StoreRepository> logger) : base(logger)
         {
-          
+           
         }
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await Do(query => query.QueryAsync<Product>(Sql.GetProducts));
+            var result = await Get(DbCollections.Products);
+            return result.Select(entity => new Product
+            {
+                DataStoreId = entity.Key.ToId(),
+                Id = (int)entity.Properties["Id"].IntegerValue,
+                CategoryId = (int)entity.Properties["CategoryId"].IntegerValue,
+                Name = entity.Properties["Name"].StringValue,
+                Description = entity.Properties["Description"].StringValue,
+                ImageUrl = entity.Properties["ImageUrl"].StringValue,
+                PricePerUnit = (decimal)entity.Properties["PricePerUnit"].DoubleValue,
+                DateCreated = entity.Properties["DateCreated"].TimestampValue.ToDateTime()
+            });
         }
 
         public async Task<bool> UpdateProduct(Product product)
         {
-            return await ExpireProduct(product.Id) && await InsertProduct(product);
+            await DeleteProduct(product.DataStoreId);
+            return  await InsertProduct(product);
         }
 
         public async Task<bool> InsertProduct(Product product)
         {
-            return await Do(query => query.ExecuteAsync(Sql.InsertProduct, new
-            {
-                product.Name,
-                product.Description,
-                product.ImageUrl,
-                CategoryTypeId = product.CategoryId,
-                product.PricePerUnit
-            })) > 0;
+            return await Insert(product, DbCollections.Products);
         }
 
-        public async Task<bool> ExpireProduct(int id)
+        public async Task DeleteProduct(long id)
         {
-            return await Do(query => query.ExecuteAsync(Sql.ExpireProduct, new {Id = id})) >0;
+             await Delete(id.ToKey(DbCollections.Products));
         }
-    }
 
-    public interface IStoreRepository
-    {
-        Task<IEnumerable<Product>> GetProducts();
-        Task<bool> UpdateProduct(Product product);
-        Task<bool> InsertProduct(Product product);
-        Task<bool> ExpireProduct(int id);
+        public async Task<IEnumerable<Categories>> GetCategories()
+        {
+            var result = await Get(DbCollections.Categories);
+            return result.Select(entity => new Categories
+            {
+                DataStoreId = entity.Key.ToId(),
+                Id = (int) entity.Properties["Id"].IntegerValue,
+                Category = entity.Properties["Category"]
+                    .StringValue
+            });
+        }
+
+        public async Task<bool> AddCategories(Categories categoryToAdd)
+        {
+            return await Insert(categoryToAdd, DbCollections.Categories);
+        }
     }
 }
        

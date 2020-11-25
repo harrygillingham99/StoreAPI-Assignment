@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom.Compiler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Scrutor;
+using store_api.CloudDatastore.DAL;
 using store_api.Objects;
-using store_api.SqlServer.DAL;
 
 namespace store_api
 {
@@ -33,7 +34,7 @@ namespace store_api
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:3000",
-                            "https://e-commerce-assignment-295115.ew.r.appspot.com");
+                            "https://e-commerce-assignment-295115.ew.r.appspot.com").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
                     });
             });
             services.AddSwaggerGen(c =>
@@ -83,6 +84,7 @@ namespace store_api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\harry\\shh.json");
             }
 
             app.UseOpenApi();
