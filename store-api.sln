@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "store-api", "store-api\stor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "store-api.Objects", "store-api.Objects\store-api.Objects.csproj", "{B2872D53-31D9-4D52-A297-BE3C325CF65A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "store-api.CloudDatastore.DAL", "store-api.SqlServer.DAL\store-api.CloudDatastore.DAL.csproj", "{6014AB3E-AE37-4CF3-91D5-FB640AD39DDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "store-api.CloudDatastore.DAL", "store-api.CloudDatastore.DAL\store-api.CloudDatastore.DAL.csproj", "{6014AB3E-AE37-4CF3-91D5-FB640AD39DDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
