@@ -23,7 +23,7 @@ namespace store_api.Controllers
             _storeRepository = storeRepository;
         }
 
-        [HttpGet("get")]
+        [HttpGet("")]
         public async Task<List<Product>> GetProducts()
         {
             try
@@ -38,7 +38,7 @@ namespace store_api.Controllers
             
         }
 
-        [HttpPut("update")]
+        [HttpPut("")]
         public async Task<bool> UpdateProduct([FromBody] Product product)
         {
             try
@@ -52,7 +52,7 @@ namespace store_api.Controllers
             }
         }
 
-        [HttpPost("insert")]
+        [HttpPost("")]
         public async Task<bool> InsertProduct([FromBody] Product product)
         {
             try
@@ -66,7 +66,7 @@ namespace store_api.Controllers
             }
         }
 
-        [HttpDelete("expire")]
+        [HttpDelete("")]
         public async Task<ActionResult> DeleteProduct([FromBody] long key)
         {
             try
