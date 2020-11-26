@@ -6,33 +6,40 @@ using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
-using store_api.Objects;
 using store_api.Objects.Helpers;
+using static store_api.Objects.DbKinds;
 using Value = Google.Cloud.Datastore.V1.Value;
 
 namespace store_api.CloudDatastore.DAL
 {
     public abstract class Repository
     {
-        private readonly ILogger<Repository> _logger;
+        private readonly string[] _dataStorePropertiesToIgnore = {"DataStoreId"};
         private readonly DatastoreDb _db;
+        private readonly ILogger<Repository> _logger;
+        private readonly DbCollections _kind;
 
-        protected Repository(ILogger<Repository> logger)
+        protected Repository(ILogger<Repository> logger, DbCollections kind)
         {
             _logger = logger;
+            _kind = kind;
             _db = DatastoreDb.Create("e-commerce-assignment-295115");
         }
 
-        protected async Task<List<Entity>> Get(DbKinds.DbCollections kind)
+        protected async Task<IEnumerable<Entity>> Get(Filter filter = null)
         {
             try
             {
-                Query query = new Query(kind.GetDescription());
-                return (await _db.RunQueryAsync(query)).Entities.ToList();
+                var query = new Query(_kind.GetDescription())
+                {
+                    Filter = filter,
+                };
+
+                return (await _db.RunQueryAsync(query)).Entities;
             }
             catch (Exception ex)
             {
-                var exceptionMsg = $"{GetType().FullName}.Do experienced a {ex.GetType()}";
+                var exceptionMsg = $"{GetType().FullName}.Get experienced a {ex.GetType()}";
                 _logger.LogError(ex, exceptionMsg);
                 throw new Exception(exceptionMsg, ex);
             }
@@ -46,38 +53,65 @@ namespace store_api.CloudDatastore.DAL
             }
             catch (Exception ex)
             {
-                var exceptionMsg = $"{GetType().FullName}.Do experienced a {ex.GetType()}";
+                var exceptionMsg = $"{GetType().FullName}.Delete experienced a {ex.GetType()}";
                 _logger.LogError(ex, exceptionMsg);
                 throw new Exception(exceptionMsg, ex);
             }
         }
 
-        protected async Task<bool> Insert<T>(T item, DbKinds.DbCollections kind)
+        protected async Task<bool> Insert<T>(T item)
         {
             try
             {
-                KeyFactory keyFactory = _db.CreateKeyFactory(kind.GetDescription());
+                var keyFactory = _db.CreateKeyFactory(_kind.GetDescription());
                 using var tran = await _db.BeginTransactionAsync();
                 var entityToInsert = new Entity
                 {
                     Key = keyFactory.CreateIncompleteKey()
                 };
-                
-                foreach (PropertyInfo propertyInfo in item.GetType().GetProperties().Where(x=> x.Name != "DataStoreId"))
-                {
-                    entityToInsert.Properties.Add(propertyInfo.Name, GetValueForItem(propertyInfo, item));
-                }
 
-                tran.Insert(entityToInsert);
+                tran.Insert(MapToEntity(entityToInsert, item));
 
                 return (await tran.CommitAsync()).IndexUpdates > 0;
             }
             catch (Exception ex)
             {
-                var exceptionMsg = $"{GetType().FullName}.ExecuteFunc experienced a {ex.GetType()}";
+                var exceptionMsg = $"{GetType().FullName}.Insert experienced a {ex.GetType()}";
                 _logger.LogError(ex, exceptionMsg);
                 throw new Exception(exceptionMsg, ex);
             }
+        }
+
+        protected async Task<bool> Update<T>(T updatedItem, Key datsStoreKey)
+        {
+            try
+            {
+                using var tran = await _db.BeginTransactionAsync();
+
+                var entityToUpdate = new Entity
+                {
+                    Key = datsStoreKey
+                };
+
+                tran.Update(MapToEntity(entityToUpdate, updatedItem));
+
+                return (await tran.CommitAsync()).IndexUpdates > 0;
+            }
+            catch (Exception ex)
+            {
+                var exceptionMsg = $"{GetType().FullName}.Update experienced a {ex.GetType()}";
+                _logger.LogError(ex, exceptionMsg);
+                throw new Exception(exceptionMsg, ex);
+            }
+        }
+
+        private Entity MapToEntity<T>(Entity entityWithKey, T item)
+        {
+            foreach (var propertyInfo in item.GetType().GetProperties()
+                .Where(x => !_dataStorePropertiesToIgnore.Contains(x.Name)))
+                entityWithKey.Properties.Add(propertyInfo.Name, GetValueForItem(propertyInfo, item));
+
+            return entityWithKey;
         }
 
         private Value GetValueForItem<T>(PropertyInfo propertyInfo, T item)
@@ -85,43 +119,32 @@ namespace store_api.CloudDatastore.DAL
             var propertyValue = propertyInfo?.GetValue(item)?.ToString();
 
             if (propertyValue == null)
-            {
                 return new Value
                 {
                     NullValue = NullValue.NullValue
                 };
-            }
             if (int.TryParse(propertyValue, out var integerResult))
-            {
                 return new Value
                 {
                     IntegerValue = integerResult
                 };
-            }
 
             if (double.TryParse(propertyValue, out var doubleResult))
-            {
                 return new Value
                 {
                     DoubleValue = doubleResult
                 };
-            }
-            if (bool.TryParse(propertyInfo.GetValue(item).ToString(), out var booleanResult))
-            {
+            if (bool.TryParse(propertyValue, out var booleanResult))
                 return new Value
                 {
                     BooleanValue = booleanResult
                 };
-            }
 
             if (DateTime.TryParse(propertyValue, out var dateTimeResult))
-            {
                 return new Value
                 {
                     TimestampValue = new Timestamp(Timestamp.FromDateTime(dateTimeResult.ToUniversalTime()))
                 };
-
-            }
 
             return new Value
             {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Cloud.Datastore.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using store_api.CloudDatastore.DAL;
+using store_api.CloudDatastore.DAL.Interfaces;
 using store_api.Objects;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace store_api.Controllers
 {
@@ -15,15 +15,17 @@ namespace store_api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
-        private readonly IStoreRepository _storeRepository;
+        private readonly IProductRepository _storeRepository;
 
-        public ProductsController(ILogger<ProductsController> logger, IStoreRepository storeRepository)
+        public ProductsController(ILogger<ProductsController> logger, IProductRepository storeRepository)
         {
             _logger = logger;
             _storeRepository = storeRepository;
         }
 
         [HttpGet("")]
+        [SwaggerResponse(200, "Success", typeof(List<Product>))]
+        [SwaggerResponse(500, "Server Error")]
         public async Task<List<Product>> GetProducts()
         {
             try
@@ -39,6 +41,8 @@ namespace store_api.Controllers
         }
 
         [HttpPut("")]
+        [SwaggerResponse(200, "Success", typeof(bool))]
+        [SwaggerResponse(500, "Server Error")]
         public async Task<bool> UpdateProduct([FromBody] Product product)
         {
             try
@@ -53,6 +57,8 @@ namespace store_api.Controllers
         }
 
         [HttpPost("")]
+        [SwaggerResponse(200, "Success", typeof(bool))]
+        [SwaggerResponse(500, "Server Error")]
         public async Task<bool> InsertProduct([FromBody] Product product)
         {
             try
@@ -67,6 +73,8 @@ namespace store_api.Controllers
         }
 
         [HttpDelete("")]
+        [SwaggerResponse(200, "Success", typeof(ActionResult))]
+        [SwaggerResponse(500, "Server Error")]
         public async Task<ActionResult> DeleteProduct([FromBody] long key)
         {
             try

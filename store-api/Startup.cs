@@ -1,5 +1,7 @@
 using System;
 using System.CodeDom.Compiler;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +16,7 @@ namespace store_api
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IConfiguration configuration)
         {
@@ -34,13 +36,14 @@ namespace store_api
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:3000",
-                            "https://e-commerce-assignment-295115.ew.r.appspot.com").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                                "https://e-commerce-assignment-295115.ew.r.appspot.com")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                     });
             });
             services.AddSwaggerGen(c =>
             {
-                c.UseOneOfForPolymorphism();
-                
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "store-front-end",
@@ -51,9 +54,8 @@ namespace store_api
                     {
                         Name = "Harry Gillingham",
                         Email = "harrygillingham@hotmail.com"
-                    },
+                    }
                 });
-
             });
             services.AddOpenApiDocument();
 
@@ -89,11 +91,7 @@ namespace store_api
 
             app.UseOpenApi();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("../swagger/v1/swagger.json", "store-api");
-            });
-
+            app.UseSwaggerUi3();
 
             app.UseHttpsRedirection();
 
@@ -103,9 +101,11 @@ namespace store_api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            FirebaseApp.Create(new AppOptions
             {
-                endpoints.MapControllers();
+                Credential = GoogleCredential.GetApplicationDefault()
             });
         }
     }

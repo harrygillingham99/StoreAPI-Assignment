@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace store_api.Objects
 {
@@ -13,6 +10,8 @@ namespace store_api.Objects
             Categories = 1,
             [Description("Products")]
             Products = 2,
+            [Description("Baskets")]
+            Baskets = 3,
 
         }
     }

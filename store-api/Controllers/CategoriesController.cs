@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using store_api.CloudDatastore.DAL;
+using store_api.CloudDatastore.DAL.Interfaces;
 using store_api.Objects;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace store_api.Controllers
 {
@@ -14,20 +15,22 @@ namespace store_api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
-        private readonly IStoreRepository _storeRepository;
+        private readonly ICategoriesRepository _categoriesRepository;
 
-        public CategoriesController(ILogger<ProductsController> logger, IStoreRepository storeRepository)
+        public CategoriesController(ILogger<ProductsController> logger, ICategoriesRepository categoriesRepository)
         {
             _logger = logger;
-            _storeRepository = storeRepository;
+            _categoriesRepository = categoriesRepository;
         }
 
         [HttpGet("")]
-        public async Task<List<Categories>> GetCategories()
+        [SwaggerResponse(200, "Success", typeof(List<Categories>))]
+        [SwaggerResponse(500, "Server Error")]
+        public async Task<ActionResult<List<Categories>>> GetCategories()
         {
             try
             {
-                return (await _storeRepository.GetCategories()).ToList();
+                return Ok((await _categoriesRepository.GetCategories()).ToList());
             }
             catch (Exception e)
             {
@@ -37,11 +40,46 @@ namespace store_api.Controllers
         }
 
         [HttpPost("")]
-        public async Task<bool> AddCategory([FromBody] Categories categoryToAdd)
+        [SwaggerResponse(200, "Success", typeof(bool))]
+        [SwaggerResponse(500, "Server Error")]
+        public async Task<ActionResult<bool>> AddCategory([FromBody] Categories categoryToAdd)
         {
             try
             {
-                return (await _storeRepository.AddCategories(categoryToAdd));
+                return Ok((await _categoriesRepository.AddCategories(categoryToAdd)));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception adding category");
+                throw;
+            }
+        }
+
+        [HttpPut("")]
+        [SwaggerResponse(200, "Success", typeof(bool))]
+        [SwaggerResponse(500, "Server Error")]
+        public async Task<ActionResult<bool>> UpdateCategory([FromBody] Categories updatedCategory)
+        {
+            try
+            {
+                return Ok(await _categoriesRepository.UpdateCategory(updatedCategory));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception adding category");
+                throw;
+            }
+        }
+
+        [HttpDelete("")]
+        [SwaggerResponse(200, "Success", typeof(ActionResult))]
+        [SwaggerResponse(500, "Server Error")]
+        public async Task<ActionResult> DeleteCategory([FromBody] long key)
+        {
+            try
+            {
+                 await _categoriesRepository.DeleteCategory(key);
+                 return Ok();
             }
             catch (Exception e)
             {

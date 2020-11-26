@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Google.Cloud.Datastore.V1;
 
 namespace store_api.Objects.Helpers
