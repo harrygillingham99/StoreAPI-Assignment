@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using store_api.CloudDatastore.DAL.Interfaces;
 using store_api.Objects;
 using store_api.Objects.Helpers;
@@ -12,7 +13,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
     public class CategoriesRepository : Repository, ICategoriesRepository
     {
         private const DbCollections Kind = DbCollections.Categories;
-        public CategoriesRepository(ILogger<Repository> logger) : base(logger, Kind)
+        public CategoriesRepository(ILogger<Repository> logger, IOptions<ConnectionStrings> connectionStrings) : base(logger, Kind, connectionStrings.Value.ProjectName)
         {
         }
         public async Task<IEnumerable<Categories>> GetCategories()

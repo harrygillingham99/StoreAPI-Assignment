@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using store_api.CloudDatastore.DAL.Interfaces;
 using store_api.Objects;
 using store_api.Objects.Helpers;
@@ -16,7 +17,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
         private const DbCollections Kind = DbCollections.Baskets;
 
         public SessionRepository(
-            ILogger<ProductRepository> logger) : base(logger, Kind)
+            ILogger<ProductRepository> logger, IOptions<ConnectionStrings> connectionStrings) : base(logger, Kind, connectionStrings.Value.ProjectName)
         {
         }
 

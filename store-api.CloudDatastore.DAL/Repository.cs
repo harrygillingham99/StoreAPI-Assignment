@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using store_api.Objects;
 using store_api.Objects.Helpers;
 using static store_api.Objects.DbKinds;
 using Value = Google.Cloud.Datastore.V1.Value;
@@ -19,11 +21,11 @@ namespace store_api.CloudDatastore.DAL
         private readonly ILogger<Repository> _logger;
         private readonly DbCollections _kind;
 
-        protected Repository(ILogger<Repository> logger, DbCollections kind)
+        protected Repository(ILogger<Repository> logger, DbCollections kind, string projectName)
         {
             _logger = logger;
             _kind = kind;
-            _db = DatastoreDb.Create("e-commerce-assignment-295115");
+            _db = DatastoreDb.Create(projectName);
         }
 
         protected async Task<IEnumerable<Entity>> Get(Filter filter = null)

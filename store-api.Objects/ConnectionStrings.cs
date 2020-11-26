@@ -2,6 +2,6 @@
 {
     public class ConnectionStrings
     {
-        public string SqlServer { get; set; }
+        public string ProjectName { get; set; }
     }
 }
