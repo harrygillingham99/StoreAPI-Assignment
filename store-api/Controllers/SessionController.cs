@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using store_api.CloudDatastore.DAL.Interfaces;
-using store_api.CloudDatastore.DAL.Repositories;
 using store_api.Objects;
 using Swashbuckle.AspNetCore.Annotations;
 

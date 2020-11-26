@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using store_api.Objects;
 using store_api.Objects.Helpers;
 using static store_api.Objects.DbKinds;
 using Value = Google.Cloud.Datastore.V1.Value;
