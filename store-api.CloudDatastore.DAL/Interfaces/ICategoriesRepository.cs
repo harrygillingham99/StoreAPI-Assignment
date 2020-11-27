@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using store_api.Objects;
+using store_api.Objects.StoreObjects;
 
 namespace store_api.CloudDatastore.DAL.Interfaces
 {

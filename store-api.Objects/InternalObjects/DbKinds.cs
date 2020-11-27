@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace store_api.Objects
+namespace store_api.Objects.InternalObjects
 {
     public static class DbKinds
     {

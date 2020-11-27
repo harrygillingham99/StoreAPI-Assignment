@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace store_api.Objects
+namespace store_api.Objects.StoreObjects
 {
     public class Product : DataStoreItem
     {

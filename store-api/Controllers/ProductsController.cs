@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using store_api.CloudDatastore.DAL.Interfaces;
 using store_api.Objects;
+using store_api.Objects.StoreObjects;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace store_api.Controllers

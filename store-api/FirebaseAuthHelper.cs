@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FirebaseAdmin.Auth;
 using Serilog;
 using store_api.Objects;
+using store_api.Objects.StoreObjects;
 
 namespace store_api
 {

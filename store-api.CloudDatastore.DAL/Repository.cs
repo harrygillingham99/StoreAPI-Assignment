@@ -7,7 +7,7 @@ using Google.Cloud.Datastore.V1;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using store_api.Objects.Helpers;
-using static store_api.Objects.DbKinds;
+using static store_api.Objects.InternalObjects.DbKinds;
 using Value = Google.Cloud.Datastore.V1.Value;
 
 namespace store_api.CloudDatastore.DAL

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Google.Cloud.Datastore.V1;
+using store_api.Objects.InternalObjects;
 
 namespace store_api.Objects.Helpers
 {

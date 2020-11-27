@@ -1,4 +1,4 @@
-﻿namespace store_api.Objects
+﻿namespace store_api.Objects.StoreObjects
 {
     public class Categories : DataStoreItem
     {

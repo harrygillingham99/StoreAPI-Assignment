@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Scrutor;
 using store_api.CloudDatastore.DAL;
 using store_api.Objects;
+using store_api.Objects.InternalObjects;
 
 namespace store_api
 {

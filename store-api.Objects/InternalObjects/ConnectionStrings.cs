@@ -1,4 +1,4 @@
-﻿namespace store_api.Objects
+﻿namespace store_api.Objects.InternalObjects
 {
     public class ConnectionStrings
     {

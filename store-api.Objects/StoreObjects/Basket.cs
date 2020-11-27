@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace store_api.Objects
+namespace store_api.Objects.StoreObjects
 {
     public class Basket : DataStoreItem
     {
