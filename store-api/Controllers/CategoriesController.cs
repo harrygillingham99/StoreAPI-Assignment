@@ -14,10 +14,10 @@ namespace store_api.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ILogger<ProductsController> _logger;
+        private readonly ILogger<CategoriesController> _logger;
         private readonly ICategoriesRepository _categoriesRepository;
 
-        public CategoriesController(ILogger<ProductsController> logger, ICategoriesRepository categoriesRepository)
+        public CategoriesController(ILogger<CategoriesController> logger, ICategoriesRepository categoriesRepository)
         {
             _logger = logger;
             _categoriesRepository = categoriesRepository;

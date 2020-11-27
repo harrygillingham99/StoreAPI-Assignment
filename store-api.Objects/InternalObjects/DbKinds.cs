@@ -12,6 +12,8 @@ namespace store_api.Objects
             Products = 2,
             [Description("Baskets")]
             Baskets = 3,
+            [Description("AdminUser")]
+            AdminUser = 4
 
         }
     }

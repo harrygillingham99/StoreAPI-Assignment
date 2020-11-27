@@ -13,10 +13,10 @@ namespace store_api.Controllers
     [ApiController]
     public class SessionController : ControllerBase
     {
-        private readonly ILogger<ProductsController> _logger;
+        private readonly ILogger<SessionController> _logger;
         private readonly ISessionRepository _sessionRepository;
 
-        public SessionController(ILogger<ProductsController> logger, ISessionRepository sessionRepository)
+        public SessionController(ILogger<SessionController> logger, ISessionRepository sessionRepository)
         {
             _logger = logger;
             _sessionRepository = sessionRepository;

@@ -82,7 +82,7 @@ namespace store_api.CloudDatastore.DAL
             }
         }
 
-        protected async Task<bool> Update<T>(T updatedItem, Key datsStoreKey)
+        protected async Task<bool> Update<T>(T updatedItem, Key dataStoreKey)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace store_api.CloudDatastore.DAL
 
                 var entityToUpdate = new Entity
                 {
-                    Key = datsStoreKey
+                    Key = dataStoreKey
                 };
 
                 tran.Update(MapToEntity(entityToUpdate, updatedItem));
