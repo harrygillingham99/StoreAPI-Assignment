@@ -39,6 +39,8 @@ namespace store_api.CloudDatastore.DAL.Repositories
 
         public Task<bool> UpdateProduct(Product product)
         {
+            product = product.EnsureCreatedDate();
+
             return Update(product, product.DataStoreId.ToKey(Kind));
         }
 
