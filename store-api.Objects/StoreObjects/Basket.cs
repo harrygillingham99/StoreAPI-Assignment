@@ -5,7 +5,7 @@ namespace store_api.Objects.StoreObjects
 {
     public class Basket : DataStoreItem
     {
-        public List<int> SelectedProducts { get; set; }
+        public Dictionary<string, string> ProductAndQuantity { get; set; }
         public bool HasPlacedOrder { get; set; }
 
         public string UserUid { get; set; }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Google.Cloud.Datastore.V1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using store_api.CloudDatastore.DAL.Interfaces;
 using store_api.Objects;
 using store_api.Objects.Helpers;
@@ -34,8 +35,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
             {
                 DataStoreId = entity.Key.ToId(),
                 HasPlacedOrder = entity.Properties["HasPlacedOrder"].BooleanValue,
-                SelectedProducts = entity.Properties["SelectedProducts"].ArrayValue?.Values
-                    ?.Select(x => (int) x.IntegerValue).ToList(),
+                ProductAndQuantity = JsonConvert.DeserializeObject<Dictionary<string,string>>(entity.Properties["SelectedProducts"].StringValue),
                 UserUid = entity.Properties["UserUid"].StringValue,
                 DateOrdered = null
             }).FirstOrDefault();
@@ -62,8 +62,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
             {
                 DataStoreId = entity.Key.ToId(),
                 HasPlacedOrder = entity.Properties["HasPlacedOrder"].BooleanValue,
-                SelectedProducts = entity.Properties["SelectedProducts"].ArrayValue?.Values
-                    ?.Select(x => (int) x.IntegerValue).ToList(),
+                ProductAndQuantity = JsonConvert.DeserializeObject<Dictionary<string, string>>(entity.Properties["SelectedProducts"].StringValue),
                 UserUid = entity.Properties["UserUid"].StringValue,
                 DateOrdered = entity.Properties["DateOrdered"].TimestampValue.ToDateTime()
             });
@@ -71,7 +70,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
 
         private async Task<IEnumerable<Entity>> CreateNewBasket(string requestUid)
         {
-            await Insert(new Basket {UserUid = requestUid, DateOrdered = null, SelectedProducts = null, HasPlacedOrder = false});
+            await Insert(new Basket {UserUid = requestUid, DateOrdered = null, ProductAndQuantity = null, HasPlacedOrder = false});
 
             return await GetLatestBasket(requestUid);
         }
