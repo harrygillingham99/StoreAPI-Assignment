@@ -36,7 +36,7 @@ namespace store_api.Controllers
                 if (requestUid == null)
                     return Unauthorized();
 
-                return Ok((await _sessionRepository.GetCurrentBasket("thisIsATestNewUser")));
+                return Ok((await _sessionRepository.GetCurrentBasket(requestUid)));
             }
             catch (Exception e)
             {
@@ -45,22 +45,22 @@ namespace store_api.Controllers
             }
         }
 
-        [HttpPut("update-basket")]
+        [HttpPost("update-basket")]
         [SwaggerResponse(200, "Success", typeof(bool))]
         [SwaggerResponse(401, "Unauthorized Request")]
         [SwaggerResponse(500, "Server Error")]
-        public async Task<ActionResult<bool>> UpdateBasket([FromBody] AuthedRequestWrapper<Basket> basketToUpdate)
+        public async Task<ActionResult<bool>> UpdateBasket([FromBody] AuthedBasketRequestWrapper basketToUpdate)
         {
             try
             {
-                var requestUid = await basketToUpdate.Verify();
+                var requestUid = await basketToUpdate.Token.Verify();
 
                 if (requestUid == null)
                     return Unauthorized();
 
-                basketToUpdate.Request.UserUid = requestUid;
+                basketToUpdate.Basket.UserUid = requestUid;
 
-                return Ok(await _sessionRepository.UpdateBasket(basketToUpdate.Request));
+                return Ok(await _sessionRepository.UpdateBasket(basketToUpdate.Basket));
             }
             catch (Exception e)
             {
@@ -73,18 +73,18 @@ namespace store_api.Controllers
         [SwaggerResponse(200, "Success", typeof(bool))]
         [SwaggerResponse(401, "Unauthorized Request")]
         [SwaggerResponse(500, "Server Error")]
-        public async Task<ActionResult<bool>> OrderItems([FromBody] AuthedRequestWrapper<Basket> basketToOrder)
+        public async Task<ActionResult<bool>> OrderItems([FromBody] AuthedBasketRequestWrapper basketToOrder)
         {
             try
             {
-                var requestUid = await basketToOrder.Verify();
+                var requestUid = await basketToOrder.Token.Verify();
 
                 if (requestUid == null)
                     return Unauthorized();
 
-                basketToOrder.Request.UserUid = requestUid;
+                basketToOrder.Basket.UserUid = requestUid;
 
-                return Ok(await _sessionRepository.OrderItems(basketToOrder.Request));
+                return Ok(await _sessionRepository.OrderItems(basketToOrder.Basket));
             }
             catch (Exception e)
             {

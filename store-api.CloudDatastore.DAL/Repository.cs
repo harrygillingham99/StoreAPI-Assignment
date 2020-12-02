@@ -8,7 +8,9 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using store_api.Objects.Helpers;
+using store_api.Objects.StoreObjects;
 using static store_api.Objects.InternalObjects.DbKinds;
+using Type = System.Type;
 using Value = Google.Cloud.Datastore.V1.Value;
 
 namespace store_api.CloudDatastore.DAL
@@ -16,6 +18,7 @@ namespace store_api.CloudDatastore.DAL
     public abstract class Repository
     {
         private readonly string[] _dataStorePropertiesToIgnore = {"DataStoreId"};
+        private readonly Type[] _typesToJsonSerialize = {typeof(List<ItemAndAmount>)};
         private readonly DatastoreDb _db;
         private readonly ILogger<Repository> _logger;
         private readonly DbCollections _kind;
@@ -35,8 +38,8 @@ namespace store_api.CloudDatastore.DAL
                 {
                     Filter = filter,
                 };
-
-                return (await _db.RunQueryAsync(query)).Entities;
+                var result = (await _db.RunQueryAsync(query)).Entities;
+                return result;
             }
             catch (Exception ex)
             {
@@ -115,8 +118,22 @@ namespace store_api.CloudDatastore.DAL
             return entityWithKey;
         }
 
+        public bool ShouldSerializeAsJson(PropertyInfo property)
+        {
+            return _typesToJsonSerialize.Contains(property.PropertyType);
+        }
+
         private Value GetValueForItem<T>(PropertyInfo propertyInfo, T item)
         {
+            if (ShouldSerializeAsJson(propertyInfo))
+            {
+                return new Value
+                {
+                    StringValue = JsonConvert.SerializeObject(propertyInfo.GetValue(item))
+
+                };
+            }
+               
             var propertyValue = propertyInfo?.GetValue(item)?.ToString();
 
             if (propertyValue == null)
@@ -149,7 +166,7 @@ namespace store_api.CloudDatastore.DAL
 
             return new Value
             {
-                StringValue = JsonConvert.SerializeObject(propertyValue)
+                StringValue = propertyValue
             };
         }
     }

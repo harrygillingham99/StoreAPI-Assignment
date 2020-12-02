@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NJsonSchema;
 using Scrutor;
 using store_api.CloudDatastore.DAL;
 using store_api.Objects;
@@ -58,7 +59,7 @@ namespace store_api
                     }
                 });
             });
-            services.AddOpenApiDocument();
+            services.AddOpenApiDocument(options => options.SchemaType = SchemaType.OpenApi3);
 
             ScanForAllRemainingRegistrations(services);
 
@@ -99,6 +100,8 @@ namespace store_api
             app.UseRouting();
 
             app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseReDoc();
 
             app.UseAuthorization();
 

@@ -5,8 +5,9 @@
         public string JwtToken { get; set; }
     }
 
-    public class AuthedRequestWrapper<T> : AuthedRequest
+    public class AuthedBasketRequestWrapper
     {
-        public T Request { get; set; }
+        public Basket Basket { get; set; }
+        public AuthedRequest Token { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
             {
                 DataStoreId = entity.Key.ToId(),
                 HasPlacedOrder = entity.Properties["HasPlacedOrder"].BooleanValue,
-                ProductAndQuantity = JsonConvert.DeserializeObject<Dictionary<string,string>>(entity.Properties["SelectedProducts"].StringValue),
+                ProductAndQuantity = JsonConvert.DeserializeObject<List<ItemAndAmount>>(entity.Properties["ProductAndQuantity"].StringValue),
                 UserUid = entity.Properties["UserUid"].StringValue,
                 DateOrdered = null
             }).FirstOrDefault();
@@ -57,12 +57,12 @@ namespace store_api.CloudDatastore.DAL.Repositories
         public async Task<IEnumerable<Basket>> GetHistoricOrders(string requestUid)
         {
             var result = await Get(Filter.And(Filter.Equal("HasPlacedOrder", true),
-                Filter.Equal("UserUid", new Value {StringValue = requestUid})));
+                Filter.Equal("UserUid", new Value { StringValue = $"{requestUid}" })));
             return result.Select(entity => new Basket
             {
                 DataStoreId = entity.Key.ToId(),
                 HasPlacedOrder = entity.Properties["HasPlacedOrder"].BooleanValue,
-                ProductAndQuantity = JsonConvert.DeserializeObject<Dictionary<string, string>>(entity.Properties["SelectedProducts"].StringValue),
+                ProductAndQuantity = JsonConvert.DeserializeObject<List<ItemAndAmount>>(entity.Properties["ProductAndQuantity"].StringValue),
                 UserUid = entity.Properties["UserUid"].StringValue,
                 DateOrdered = entity.Properties["DateOrdered"].TimestampValue.ToDateTime()
             });
@@ -77,7 +77,7 @@ namespace store_api.CloudDatastore.DAL.Repositories
 
         private async Task<IEnumerable<Entity>> GetLatestBasket(string requestUid)
         {
-            return await Get(Filter.And(Filter.Equal("HasPlacedOrder", false),Filter.Equal("UserUid", new Value {StringValue = requestUid})));
+            return await Get(Filter.And(Filter.Equal("HasPlacedOrder", new Value { BooleanValue = false }), Filter.Property("UserUid", new Value { StringValue = $"{requestUid}"}, PropertyFilter.Types.Operator.Equal)));
         }
     }
 }
