@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Datastore.V1" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
