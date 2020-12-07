@@ -118,7 +118,7 @@ namespace store_api.CloudDatastore.DAL
             return entityWithKey;
         }
 
-        public bool ShouldSerializeAsJson(PropertyInfo property)
+        private bool ShouldSerializeAsJson(PropertyInfo property)
         {
             return _typesToJsonSerialize.Contains(property.PropertyType);
         }
